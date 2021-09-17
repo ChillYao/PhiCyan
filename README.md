@@ -1,2 +1,2 @@
 # PhiCyan
-The project for HackOverFlow PhiCyan tean
+The project for HackOverFlow PhiCyan team

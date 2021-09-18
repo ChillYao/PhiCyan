@@ -4,7 +4,7 @@ let rgb_r=0, rgb_g=0, rgb_b=0;
 
 function preload() {
     // preload() runs once
-    img = loadImage('assets/10725827.jpeg');
+    img = loadImage('assets/img_blue_0_0_255.jpeg');
   }
 
 function setup() {
@@ -44,9 +44,19 @@ function draw() {
     let sw = 2;
     strokeWeight(sw);
     drawRect(1, 0.2, 1024, 1024);
-    
-    // rgb_r : /18 ~ /2 angle 
-    // rgb_g : num_polys 
+    console.log(rgb_r,rgb_g,rgb_b)
+    // rgb_r : /50 ~ /2 angle
+    let quanztize_rgb_r = 0
+    quanztize_rgb_r = 2+(rgb_r/(256/48))
+    // rgb_g : num_polys 50 ~ 100
+    let quanztize_rgb_g = 0
+    quanztize_rgb_g = 50+(rgb_g/(256/50))
+    // rgb_b : 1~5
+    let quanztize_rgb_b = 0
+    quanztize_rgb_b = 1+(rgb_b/(256/4))
+    strokeWeight(quanztize_rgb_b);
+    console.log(quanztize_rgb_r,quanztize_rgb_g,quanztize_rgb_b)
+
     // draw Polys系列
     let num_sides;
     if (color == "Black"){
@@ -57,8 +67,8 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 60 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let num_polys = quanztize_rgb_g 
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -70,8 +80,8 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 9 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let num_polys = quanztize_rgb_g 
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -83,8 +93,8 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 9 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let num_polys = quanztize_rgb_g
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -96,8 +106,8 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 9 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let num_polys = quanztize_rgb_g
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -109,8 +119,8 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 20 // TODO: numPolys根據rgb調控密度
-        let angle = Math.PI / 18
+        let num_polys = quanztize_rgb_g
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -122,14 +132,14 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let num_polys = 9 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let num_polys = quanztize_rgb_g
+        let angle = PI / quanztize_rgb_r
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
     else if (color == "Blue"){
         //圓形 parameters: numOfCircle, radius, decrease_rate
-        drawCircle(18, 360, 0.1); // TODO:根據rgb調控
+        drawCircle(quanztize_rgb_g, 300, 1/quanztize_rgb_r); // TODO:根據rgb調控
         noLoop()
     }
     else if (color == "White"){
@@ -139,7 +149,7 @@ function draw() {
         let t_x = 0
         let t_y = 0
         translate(t_x, t_y)
-        let angle = PI / 18
+        let angle = PI / quanztize_rgb_r
         drawRhombuses(x, y, angle, 0, 5, t_x, t_y, true)
         noLoop()
     }
@@ -274,7 +284,7 @@ function drawRhombus(x, y, r1, r2) {
     
   function drawRhombuses(x, y, rot, numRot, numRhombus, t_x, t_y, draw_dots) {
     for (i = 2; i < width; i+=2) {
-      if (colorCheck(x, y, i, i / 2, rot * numRot, t_x, t_y, draw_dots)) {
+      if (colorCheckRhombus(x, y, i, i / 2, rot * numRot, t_x, t_y, draw_dots)) {
         drawRhombus(x, y, i, i/2)
         
         if (numRhombus > 1) {
@@ -284,4 +294,65 @@ function drawRhombus(x, y, r1, r2) {
         return;
       }
     }
+}
+
+function colorCheckRhombus(x, y, r1, r2, rot, t_x, t_y, draw_dots) {
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  var imgData = ctx.getImageData(0, 0, c.width, c.height);
+
+  let angle = TWO_PI / 4;
+  let a = 0;
+  let sx = []
+  let sy = []
+  sx1 = round(x + cos(a + rot) * r1 + width / 2 + t_x);
+  sy1 = round(y + sin(a + rot) * r1 + width / 2 + t_y);
+  sx[0] = sx1
+  sy[0] = sy1
+  a += angle
+  sx1 = round(x + cos(a + rot) * r2 + width / 2 + t_x);
+  sy1 = round(y + sin(a + rot) * r2 + width / 2 + t_y);
+  sx[1] = sx1
+  sy[1] = sy1
+  a += angle
+  sx1 = round(x + cos(a + rot) * r1 + width / 2 + t_x);
+  sy1 = round(y + sin(a + rot) * r1 + width / 2 + t_y);
+  sx[2] = sx1
+  sy[2] = sy1
+  a += angle
+  sx1 = round(x + cos(a + rot) * r2 + width / 2 + t_x);
+  sy1 = round(y + sin(a + rot) * r2 + width / 2 + t_y);
+  sx[3] = sx1
+  sy[3] = sy1
+  
+  for (let a = 0; a < 4; a += 1) {
+    // let sx = x + cos(a) * radius + width / 2;
+    // let sy = y + sin(a) * radius + height / 2;
+    
+    let c1 = imgData.data[round((sx[a] + width * sy[a]) * 4)]
+    let c2 = imgData.data[round((sx[a] + width * sy[a]) * 4 + 1)]
+    let c3 = imgData.data[round((sx[a] + width * sy[a]) * 4 + 2)]
+    let c4 = imgData.data[round((sx[a] + width * sy[a]) * 4 + 3)]
+    // console.log(c1, c2, c3, c4)
+    if ((c1 < 255 || c2 < 255 || c3 < 255) && c4 > 0) {
+      if (draw_dots) {
+        let sl = 5
+        for (k = -sl; k < sl; k++){
+          for (j = -sl; j < sl; j++) {
+            imgData.data[round((sx + width * (sy + j) + k) * 4)] = 255
+            imgData.data[round((sx + width * (sy + j) + k) * 4 + 1)] = 0
+            imgData.data[round((sx + width * (sy + j) + k) * 4 + 2)] = 0
+            // console.log(sx, sy)
+          }
+
+        }
+      }
+      
+      
+      ctx.putImageData(imgData, 0, 0);
+      // print(radius)
+      return true;
+    }
+  }
+  return false;
 }

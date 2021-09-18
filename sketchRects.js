@@ -1,11 +1,10 @@
 function setup() {
-    createCanvas(400, 400);
+    pixelDensity(1)
+    let canvas = createCanvas(400, 400);
+     canvas.id("myCanvas");
   }
     
   function drawRect(numberRects, displacement_f, x,y){
-    
-    // console.log(Math.atan(displacement_f / (1-displacement_f)))
-    
     rect(0,0,x, y)
     if (numberRects <= 1) {
       return
@@ -13,7 +12,6 @@ function setup() {
     else {
       
     let length_ratio = sqrt(displacement_f ** 2 + (1-displacement_f)**2)
-    // console.log(length_ratio)
       rotate(Math.atan(displacement_f / (1-displacement_f)))
       drawRect(numberRects-1, displacement_f, x * length_ratio, y * length_ratio)
     }
@@ -31,13 +29,25 @@ function setup() {
     // rect(boundary,boundary,400-2*(boundary),400-2*(boundary))
     rect(0,0,(width - boundary),(height-boundary))
     strokeWeight(2)
-    drawRect(15, 0.15, 250, 250)
-    noLoop()
-    // rect(0, 0, 100, 100);
-    // strokeWeight(2)
-    // rotate(PI / 12.0);
-    // rect(100, 100, 50, 50)
-    // triangle(a1, a2, b1, b2, c1, c2)
-    // console.log(mouseX, mouseY)
+    t_x = -0
+    t_y = -0
+    translate(t_x, t_y)
+    drawRect(10, 0.2, 250, 250)
     
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    var imgData = ctx.getImageData(0, 0, c.width, c.height);
+    print(imgData.data.length)
+    let stride = 4
+    for (i = 0; i < 1 * width; i++) {
+      imgData.data[i * stride + 0] = 255
+      imgData.data[i * stride + 1] = 0
+      imgData.data[i * stride + 2] = 0
+    }
+    ctx.putImageData(imgData, 0, 0);
+  
+    // for (i = 0; i < 20; i++) {
+    //   console.log(imgData.data[i])
+    // }
+    noLoop()
   }

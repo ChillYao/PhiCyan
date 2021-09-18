@@ -1,5 +1,6 @@
 let img;
 let color,rgb;
+let rgb_r=0, rgb_g=0, rgb_b=0;
 
 function preload() {
     // preload() runs once
@@ -12,17 +13,25 @@ function setup() {
     canvas.id("myCanvas");
 
     img.loadPixels();
-    let pixel = img.get(); // return whole picture
-
-    rgb = getAverageRGB(img);
-    
+    for (let i = 0; i<img.width;i++){
+        for (let j=0; j<img.height; j++){
+            let color = img.get(i,j)
+            rgb_r += color[0]
+            rgb_g += color[1]
+            rgb_b += color[2]
+        }
+    }
+    let imgSize = img.width*img.height
+    rgb_r = ~~(rgb_r/imgSize)
+    rgb_g = ~~(rgb_g/imgSize)
+    rgb_b = ~~(rgb_b/imgSize)
 }
 
 function draw() {
-    background(rgb);
+    background([rgb_r,rgb_g,rgb_b]);
     noFill()  
 
-    color = quantize_color(rgb); // for mapping to shape
+    color = quantize_color([rgb_r,rgb_g,rgb_b]); // for mapping to shape
     console.log(color)
     
     // TODO: 根據rgb數值調控筆畫
@@ -31,7 +40,7 @@ function draw() {
     let sw1 = 10
     strokeWeight(sw1)
     stroke(0)
-    let boundary = 30
+    let boundary = 10
     rect(0,0,(width - boundary),(height-boundary))
     let sw = 2;
     strokeWeight(sw);
@@ -92,6 +101,7 @@ function draw() {
         noLoop()
     }
     else if (color == "Cyan"){
+        console.log("shape_Cyan")
         //六邊形
         num_sides = 6 
         let x = 0
@@ -100,7 +110,7 @@ function draw() {
         let t_y = -50
         translate(t_x, t_y)
         let num_polys = 9 // TODO: numPolys根據rgb調控密度
-        let angle = PI / 18
+        let angle = Math.PI / 18
         drawPolys(x, y, num_sides, angle, 0, num_polys, t_x, t_y, false)
         noLoop()
     }
@@ -134,42 +144,8 @@ function draw() {
         noLoop()
     }
 }
-    
 
-function getAverageRGB(img) {
-    var blockSize = 5, // only visit every 5 pixels
-    defaultRGB = {r:0,g:0,b:0}, // for non-supporting envs
-    data,
-    i = -4,
-    length,
-    rgb = {r:0,g:0,b:0},
-    count = 0;
-
-    var data = context.getImageData(0, 0, img.width, img.height);
-
-    if (!context) {
-        return defaultRGB;
-    }
-
-    length = data.data.length;
-
-    while ( (i += blockSize * 4) < length ) {
-        ++count;
-        rgb.r += data.data[i];
-        rgb.g += data.data[i+1];
-        rgb.b += data.data[i+2];
-    }
-
-    // ~~ used to floor values
-    rgb.r = ~~(rgb.r/count);
-    rgb.g = ~~(rgb.g/count);
-    rgb.b = ~~(rgb.b/count);
-    return rgb;
-
-}
-
-function quantize_color(rgb){
-    color = [rgb.r,rgb.g,rgb.b]
+function quantize_color(color){
     if (color[0]<128&&color[1]<128&&color[2]<128){
         return "Black"
     }

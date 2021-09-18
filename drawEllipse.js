@@ -1,11 +1,11 @@
 function setup() {
     createCanvas(400, 400);
 }
-
-function drawCircle(numOfCircle, radius, decrease_rate) {
-    for (let i = 0; i < numOfCircle; i++) {
-        circle(0, 0, radius);
-        radius -= radius * decrease_rate;
+function drawEllipse(numOfEllipse, width, height, decrease_rate) {
+    for (let i = 0; i < numOfEllipse; i++) {
+        ellipse(0, 0, width, height)
+        width -= width * decrease_rate;
+        height -= height * decrease_rate;
     }
 }
 
@@ -29,7 +29,9 @@ function draw() {
     rect(0, 0, (width - boundary), (height - boundary));
     //设置画笔粗细：
     strokeWeight(2);
-    drawCircle(18, 360, 0.1);
+    //画同心椭圆
+    drawEllipse(10, 360, 200, 0.2);
+
 
     //停止draw():
     noLoop()
